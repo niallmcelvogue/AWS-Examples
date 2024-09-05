@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo "== delete all buckets =="
+
+aws s3api list-buckets \
+   --query 'Buckets[].[Name]' \
+   --output text | xargs -I {} aws s3 rb s3://{} --force
