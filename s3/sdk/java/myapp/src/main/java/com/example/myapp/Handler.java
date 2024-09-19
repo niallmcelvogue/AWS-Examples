@@ -54,34 +54,24 @@ public class Handler {
 
     public void populateBucket() {
         try {
-            Path tmpDirPath = Paths.get("/tmp/s3JavaFiles");
-            Files.createDirectories(tmpDirPath);
-            Random rand = new Random();
-            int numOfFiles = 1 + rand.nextInt() % 6;
+            Path tmpDirPath = Files.createTempDirectory("s3JavaFiles");
+            int numOfFiles = new Random().nextInt(6) + 1;
 
-            for(int i=0; i <= numOfFiles; i++) {
+            for (int i = 0; i < numOfFiles; i++) {
                 String fileName = "myFile" + i + ".txt";
-                Files.createFile(tmpDirPath.resolve(fileName));
-                Files.write(tmpDirPath.resolve(fileName), ("Hello World" + UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
+                Path filePath = tmpDirPath.resolve(fileName);
+                Files.write(filePath, ("Hello World" + UUID.randomUUID()).getBytes(StandardCharsets.UTF_8));
 
-                s3Client.putObject(PutObjectRequest
-                        .builder()
+                s3Client.putObject(PutObjectRequest.builder()
                         .bucket(bucketName)
                         .key(fileName)
                         .build(),
-                        tmpDirPath.resolve(fileName));
+                        filePath);
 
-                s3Client.waiter().waitUntilObjectExists(HeadObjectRequest
-                        .builder()
-                        .bucket(bucketName)
-                        .key(fileName)
-                        .build());
-
-                System.out.println(fileName + " is ready.");
-                System.out.printf("%n");
+                System.out.println(fileName + " uploaded.");
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.err.println("Error populating bucket: " + e.getMessage());
         }
     }
 }
