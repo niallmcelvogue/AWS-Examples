@@ -1,0 +1,20 @@
+{
+    "Statement": [
+       {
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": "arn:aws:iam::774305589353:user/NiallMcElvogue"
+          },
+          "Action": 
+          [
+            "s3:GetObject", 
+            "s3:ListBucket",
+            "s3:PutObject"
+        ],
+          "Resource": [
+            "arn:aws:s3:::bucket-policy-example-nmce-1234",
+            "arn:aws:s3:::bucket-policy-example-nmce-1234/*"
+          ]
+       }
+    ]
+ }
